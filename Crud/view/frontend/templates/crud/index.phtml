@@ -1,0 +1,82 @@
+<?php
+/**
+ * Copyright © 2015 excellencecommerce. All rights reserved.
+ */
+?>
+<?php
+/**
+ * {{controller}} {{action}} template
+ *
+ * @var $block \Excellence\Crud\Block\Crud\Index
+ */
+
+
+
+?>
+<div class="page-title-wrapper">
+    <h1 class="page-title">
+       <span class="base">Welcome...! Please Register Youself Here...</span>
+   </h1>
+</div>
+
+
+
+    <form class="form create account" action="<?php echo $this->getUrl("crud/form/index");?>" method="POST">
+        <fieldset class="fieldset ">
+            <input type="hidden" name = "userUId" class="get_id">
+            <div class="field  required">
+                <label class="label">
+                    <span>UserName:</span>
+                </label> 
+                <div class="control">
+                    <input required="true" class="username_edit input-text required-entry" placeholder="Enter Your Username" type="text" name="username" value="" minlength="5" maxlength="10">
+                </div>
+            </div>
+            <div class="field  required">
+                <label class="label">
+                    <span>First Name:</span>
+                </label> 
+                <div class="control">
+                    <input required="true" class="fname_edit input-text required-entry" placeholder="Enter Your Firstname" type="text" name="fname" value="" minlength = "5" maxlength="10">
+                </div>
+            <div>
+        </fieldset>
+        <fieldset class="fieldset">
+            <div class="field  required">
+                <label class="label">
+                    <span>Last Name:</span>
+                </label>
+                <div class="control"> 
+                    <input required="true" class="lname_edit input-text required-entry" placeholder="Enter Your Lastname" type="text" name="lname" value="" minlength = "4" maxlength="10">
+                </div>
+            </div>           
+            <div class="field required">
+                <label class="label">
+                    <span>Email:</span>
+                </label> 
+                <div class="control"> 
+                    <input required="true" class="emailEdit input-text" placeholder="Enter Your Email Address" type="text" name="email" value="" >
+                </div>
+            </div>
+            <div class="field required">
+                <label class="label">
+                    <span>Password:</span>
+                </label>
+                <div class="control"> 
+                    <input required="true" class = "pass_edit input-text required-entry" placeholder="Enter Your Password...!" type="password" name="password" value = "" minlength = "5">
+                    <div class="password-strength-meter-container">
+                        <div class="password-strength-meter">
+                            Password Strength:
+                            <span id="password-strength-meter-label"> Min 5 character</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           <div class="actions-toolbar">
+                <div class="primary">
+                    <button name="sendData" class="action submit primary" title="Register">Register</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</fieldset>

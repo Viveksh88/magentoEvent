@@ -1,0 +1,98 @@
+<?php 
+$showData = $block->showUserAadd();
+
+?>
+<?php $addSaveId = $this->getRequest()->getParams();?>
+<?php $id = $addSaveId['viewAddId'];?>
+<div class="addAddress"><a href="<?php echo $this->getUrl('crud/address/index/id=.', array('userId' => $id));?>"> <button class="action primary">Add Address</button></a></div>
+
+<div class="table-wrapper orders-history">
+    <table class="admin__table data table table-order-items history" id="my-orders-table">
+        <?php $i = 1; ?>
+        <thead>
+            <tr>
+                <th class="data-grid-th">S.No.</th>
+                <th class="data-grid-th">House No</th>
+                <th class="data-grid-th">Street Name</th>
+                <th class="data-grid-th">City Name</th>
+                <th class="data-grid-th">State</th>
+                <th class="data-grid-th ed_save">Pin</th>
+                <th class="data-grid-th del">Edit</th> 
+                <th class="data-grid-th del">Delete</th>  
+            </tr>
+        </thead>
+        <tbody>
+        <?php foreach($showData as $collection):?>
+            <tr class="data-row">
+                <?php $addId = $collection['excellence_address_id'];?>
+                <?php $uId = $collection['excellence_user_id'];?>
+                <td  hidden class="addId"><?php echo $addId;?></td>
+                <td  hidden class="uId"><?php echo $uId;?></td>
+                <td  class="sNo "><?php echo $i;?></td>
+                <td contenteditable="false" class="houseN"><?php echo $collection['House_no'];?></td>
+                <td contenteditable="false" class="streetN"><?php echo $collection['Street_name'];?></td>
+                <td contenteditable="false" class="cityN"><?php echo $collection['City_name'];?></td>
+                <td contenteditable="false" class="stateN "><?php echo $collection['State_name'];?></td>
+                <td contenteditable="false" class="pin"><?php echo $collection['pin'];?></td>
+                <td class="editAddTable" title="Edit" ><button class="action primary" >Edit</button></td>
+                <td hidden class="saveAdd"> <button class="action primary">Save</button></td>
+                <td class="deleteAdd"><a href="<?php echo $this->getUrl('crud/addressdata/index/id=.', array('deleteAddId' => $addId));?>"> <button class="action primary"> Delete</button></a></td>
+            </tr>
+            <?php $i++; ?>
+            
+            <?php endforeach;?>
+        </tbody>
+    </table>
+</div>
+
+<script>
+require(
+['jquery'],
+    function($) {
+        $('.editAddTable').click(function () {         //Make Table Editable...      
+            var trSearch = $(this).closest("tr");
+            var  currentTD = $(this).closest("tr").find('td');
+            trSearch.find('.saveAdd').show();
+            trSearch.find('.editAddTable').hide();  
+            $.each(currentTD, function () {
+                currentTD.css("background-color", "lightgrey");
+                $(this).prop('contenteditable', true);
+                $(this).css('padding','4px');
+                $(this).focus();
+                $(".edittable").prop('contenteditable', false); 
+                $(".sNo").prop('contenteditable', false); 
+                $(".saveAdd").prop('contenteditable', false); 
+                $(".deleteAdd").prop('contenteditable', false);        
+            });
+        });                                               
+        $(".saveAdd").click(function(){   // to Save Data to database....
+            $(this).prop('contenteditable', false); 
+            var row = $(this).closest("tr"); 
+            var rowCss = $(this).closest("tr").find('td');  
+            row.find('.saveAdd').hide();
+            row.find('.editAddTable').show(); 
+            rowCss.css("background-color", "white");  // Find the row
+            $(this).css('padding','0px');
+            var tableId = row.find(".addId").text();
+            var usId = row.find(".uId").text();
+            var House = row.find(".houseN").text();
+            var street = row.find(".streetN").text();
+            var city = row.find(".cityN").text();
+            var state = row.find(".stateN").text();
+            var pin = row.find(".pin").text();  
+            // console.log(House);
+            $.ajax({
+                url:"<?php echo $this->getUrl('crud/addressdata/index');?>",
+                data:{id:tableId,userId:usId,hNo:House,street:street,city:city,state:state,pin:pin},
+                type:'POST',
+                success:function(response){
+                    if(!response){
+                        window.location.reload();
+                        
+                    }
+                }
+            });
+        }); 
+    }
+);
+</script>

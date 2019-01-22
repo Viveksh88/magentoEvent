@@ -1,0 +1,35 @@
+	
+
+<?php  $_gridrecords = $block->getCollection(); // get collection which we set in block class ?>
+<?php if ($_gridrecords && count($_gridrecords)): ?>
+    <div class="table-wrapper orders-history">
+        <table class="data table table-order-items history" id="my-orders-table">
+            <caption class="table-caption"><?php echo __('Grid Record') ?></caption>
+            <thead>
+                <tr>
+                    <th scope="col" class="col id">Id</th>
+                    <th scope="col" class="col title">Name</th>
+                    <th scope="col" class="col date">jnjnnjn</th>
+                    <th scope="col" class="col status">jjnjnjnn</th>
+                    <th scope="col" class="col ">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php  // read collection as magento1.x and display in list 
+                       foreach ($_gridrecords as $_gridrecord): ?>
+                    <tr>
+                        <td class="col id"><?php echo $_gridrecord->getId(); ?></td>
+                        <td class="col shipping"><?php echo $_gridrecord['fristname']; ?></td>
+                        <td class="col date"><?php echo $_gridrecord['username'];?></td>
+                    
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php if ($block->getPagerHtml()): ?>
+        <div class="order-products-toolbar toolbar bottom"><?php echo $block->getPagerHtml(); // for display pager block which we create in block file.   ?></div>
+    <?php endif ?>
+<?php else: ?>
+    <div class="message info empty"><span><?php echo __('grid records not available.'); ?></span></div>
+<?php endif ?>

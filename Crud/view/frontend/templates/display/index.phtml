@@ -1,0 +1,127 @@
+<div class=" custome_s block block-content">
+    <div class="field search">
+        <div class="control">
+            <input class="input-val" maxlength="128" type="text" placeholder="Search for Username...">
+            <button id="find" class="action primary">Search</button>
+        </div>
+    </div>
+</div>
+<div class="register_b">
+    <a href="<?php echo $this->getUrl('crud/crud/index'); ?>"><button class="action submit primary" >Register Your Self</button></a>
+</div>
+<?php  $collectiondata = $block->getCollection(); // get collection which we set in block class ?>
+<?php if ($collectiondata && count($collectiondata)): ?>
+    <div class="table-wrapper orders-history">
+        <table class="admin__table data table table-order-items history" id="my-orders-table">
+            <caption class="table-caption"><?php echo __('Grid Record') ?></caption>
+            <?php $i = 1; ?>
+            <thead>
+                <tr>
+                    <th class="data-grid-th">S.No.</th>
+                    <th class="data-grid-th">UserName</th>
+                    <th class="data-grid-th">FirstName</th>
+                    <th class="data-grid-th">LastName</th>
+                    <th class="data-grid-th">Email</th>
+                    <th class="data-grid-th edSave">Edit/Save</th>
+                    <th class="data-grid-th del">Delete</th> 
+                    <th class="data-grid-th del">Add Address</th> 
+                    <th class="data-grid-th del">View USer Address</th>  
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach($collectiondata as $collection):?>
+                <tr class="data-row">
+                    <?php $id = $collection['excellence_crud_id'];?>
+                    <td  hidden class="editId"><?php echo $id;?></td>
+                    <td  class="sNo "><?php echo $i;?></td>
+                    <td contenteditable="false" class="username"><?php echo $collection['username'];?></td>
+                    <td contenteditable="false" class="fname "><?php echo $collection['fristname'];?></td>
+                    <td contenteditable="false" class="lastname"><?php echo $collection['lastname'];?></td>
+                    <td contenteditable="false" class="emailId "><?php echo $collection['email'];?></td>
+                    <td hidden class="pass"><?php echo $collection['password'];?></td>
+                    <td class="editTable" title="Edit" ><button class="action primary" >Edit</button></td>
+                    <td style="display:none" class="save" title="Save" ><button class="action primary" >Save</button></td>
+                    <td class="delete"><a href="<?php echo $this->getUrl('crud/form/index/id=.', array('deleteId' => $id));?>"> <button class="action primary"> Delete</button></a></td>
+                    <td class=""><a href="<?php echo $this->getUrl('crud/address/index/id=.', array('userId' => $id));?>"> <button class="action primary"> Add Address</button></a></td>
+                    <td class=""><a href="<?php echo $this->getUrl('crud/viewaddress/index/id=.', array('viewAddId' => $id));?>"> <button class="action primary"> View Address</button></a></td>
+                </tr>
+                <?php $i++; ?>
+                <?php endforeach;?>
+            </tbody>
+        </table>
+    </div>
+    <?php if ($block->getPagerHtml()): ?>
+        <div class="order-products-toolbar toolbar bottom"><?php echo $block->getPagerHtml(); // for display pager block which we create in block file.   ?></div>
+    <?php endif ?>
+<?php else: ?>
+    <div class="message info empty"><span><?php echo __('grid records not available.'); ?></span></div>
+<?php endif ?>
+
+<!-- Edit part js.... -->
+<script>
+require(
+   ['jquery'],
+        function($) {
+            $('.editTable').click(function () {         //Make Table Editable...      
+                var trSearch = $(this).closest("tr");
+                var  currentTD = $(this).closest("tr").find('td');
+                trSearch.find('.save').show();
+                trSearch.find('.editTable').hide();  
+                $.each(currentTD, function () {
+                    currentTD.css("background-color", "lightgrey");
+                    $(this).prop('contenteditable', true);
+                    $(this).css('padding','4px');
+                    $(this).focus();
+                    $(".editTable").prop('contenteditable', false); 
+                    $(".sNo").prop('contenteditable', false); 
+                    $(".save").prop('contenteditable', false); 
+                    $(".delete").prop('contenteditable', false);        
+                });
+            });                                               
+            $(".save").click(function(){   // to Save Data to database....
+                $(this).prop('contenteditable', false); 
+                var row = $(this).closest("tr"); 
+                var rowCss = $(this).closest("tr").find('td');  
+                rowCss.css("background-color", "white");  // Find the row
+                var tableId = row.find(".editId").text();
+                var username = row.find(".username").text();
+                var fname = row.find(".fname").text();
+                var lname = row.find(".lastname").text();
+                var eMailAd = row.find(".emailId").text();
+                var pwd = row.find(".pass").text();  
+                $.ajax({
+                    url:"<?php echo $this->getUrl('crud/form/index');?>",
+                    data:{id:tableId,uname:username,fname:fname,lname:lname,emailAd:eMailAd,pwd:pwd},
+                    type:'POST',
+                    success:function(response){
+                        if(response){
+                            window.location.reload();
+                        }
+                    }
+                });
+            });                                                      
+            $("#find").click(function(){    // Search Data Js work... 
+                var searchUserVal = $(".input-val").val();
+                $.ajax({
+                    url:"<?php echo $this->getUrl('crud/display/index');?>",
+                    data:{uName:searchUserVal},
+                    type:'POST',
+                    success:function(response){
+
+                        var rr = JSON.parse(response);
+                        $(".edSave").hide();
+                        $(".del").hide();
+                        $(".data-row").html("");
+                        $(".order-products-toolbar").hide();
+                        var url = window.location;    
+                        for(var i=0;i<rr.count;i++)
+                        {
+                            $(".admin__table").append('<tr class="data-row"><td hidden>'+rr[i].id+'</td><td>'+(i+1)+'</td><td  class="username">'+rr[i].username+'</td><td  class="firstname">'+rr[i].fName+'</td><td  class="lastname">'+rr[i].lName+'</td><td  class="email">'+rr[i].eMail+'</td><td hidden  class="pass">'+rr[i].pass+'</td></tr>');
+                        }
+                    
+                    }
+                });
+            });        
+        }
+    );
+</script>
